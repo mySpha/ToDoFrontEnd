@@ -1,0 +1,154 @@
+<div class="container py-5">
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+        <h1 class="app-title text-primary">
+            <i class="fa-solid fa-list-check me-2"></i>
+            My Todo Manager
+        </h1>
+        <p class="text-muted">Organize your day efficiently</p>
+    </div>
+
+    <!-- ADD NEW TASK -->
+    <div class="add-box p-4 mb-4">
+  <div class="row g-3 align-items-end">
+
+    <div class="col-md-5">
+      <input
+        type="text"
+        [(ngModel)]="task.title"
+        class="form-control"
+        placeholder="Task title" />
+    </div>
+
+    <div [ngClass]="task.itemId !== 0 ? 'col-md-4' : 'col-md-7'">
+      <input
+        type="text"
+        [(ngModel)]="task.description"
+        class="form-control"
+        placeholder="Description" />
+    </div>
+
+    
+    @if(task.itemId !== 0){
+
+      <div class="col-md-3">
+        <select
+          class="form-select"
+          [(ngModel)]="task.statusId">
+
+            @for(status of statuses(); track status.statusId){
+          <option [ngValue]="status.statusId">{{status.statusName}}</option>
+            }
+        </select>
+      </div>
+
+      <div class="col-md-2 d-grid">
+        <button
+          (click)="onUpdateTask()"
+          class="btn btn-outline-warning">
+          <i class="fa fa-save me-1"></i>
+          Update
+        </button>
+      </div>
+
+      <div class="col-md-2 d-grid">
+        <button
+          (click)="cancelUpdate()"
+          class="btn btn-outline-danger">
+          Cancel
+        </button>
+      </div>
+
+    }
+    @else{
+
+      <div class="col-md-3 d-grid">
+        <button
+          (click)="onSaveNewTask()"
+          class="btn btn-primary">
+          <i class="fa fa-plus me-1"></i>
+          Add Task
+        </button>
+      </div>
+
+    }
+
+  </div>
+</div>
+
+    <!-- SEARCH + SORT -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-5 position-relative">
+            <i class="fa fa-search search-icon"></i>
+            <input class="form-control search-box" placeholder="Search tasks..." />
+        </div>
+
+
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <div class="btn-group">
+    <button
+        class="btn btn-outline-secondary"
+        [class.active]="selectedStatus() === null"
+        (click)="setFilter(null)">
+        All
+    </button>
+
+    <button
+        class="btn btn-outline-warning"
+        [class.active]="selectedStatus() === 1"
+        (click)="setFilter(1)">
+        Pending
+    </button>
+
+    <button
+        class="btn btn-outline-primary"
+        [class.active]="selectedStatus() === 2"
+        (click)="setFilter(2)">
+        In Progress
+    </button>
+
+    <button
+        class="btn btn-outline-success"
+        [class.active]="selectedStatus() === 3"
+        (click)="setFilter(3)">
+        Done
+    </button>
+</div>
+
+        </div>
+    </div>
+
+    <!-- TODO LIST -->
+    <div class="row g-4">
+        <!-- Task 1 -->
+        @for(item of filteredTodos(); track item.itemId){
+        <div class="col-md-6 col-lg-4">
+            <div class="card todo-card p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h5 class="fw-semibold">{{item.title}}</h5>
+                    <span class="badge" [ngClass]="getStatusClass(item.statusId)">  {{getStatusName(item.statusId)}}</span>
+                </div>
+
+                <p class="text-muted small mt-2">{{item.description}}</p>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">        
+                    <div>
+                        <button (click)="onEditTask(item)" class="btn btn-sm btn-outline-primary">
+                            <i class="fa fa-pen"></i>
+                        </button>
+                        <button (click)="onDeleteTask(item.itemId)" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Floating Add Button -->
+
+<div class="fab">
+    <i class="fa fa-plus"></i>
+</div>
